@@ -1,6 +1,8 @@
 package com.codepath.apps.restclienttemplate.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.listeners.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.apps.restclienttemplate.utils.TimelineResponseParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -46,7 +49,7 @@ public class TimelineActivity extends AppCompatActivity {
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
-                Log.i("timeline", "loading more with totalcurrent" + totalItemsCount);
+                Log.i("timeline", "loading more with total current" + totalItemsCount);
                 populateTimeline(totalItemsCount);
                 return true;
             }
@@ -102,8 +105,9 @@ public class TimelineActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.compose) {
+            Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

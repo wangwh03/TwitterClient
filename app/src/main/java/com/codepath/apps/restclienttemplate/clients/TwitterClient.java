@@ -24,13 +24,14 @@ import com.loopj.android.http.RequestParams;
  * 
  */
 public class TwitterClient extends OAuthBaseClient {
-	public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class; // Change this
+	public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
 	public static final String REST_URL = "https://api.twitter.com/1.1/";
 	public static final String REST_CONSUMER_KEY = "LGXI91lhdbmeZ39yv0CA3noLZ";
 	public static final String REST_CONSUMER_SECRET = "5oTaPrzERT7okTyMhRkPgMd8rx80hXypKvDvZycg3J4JLS0EZv";
-	public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets"; // Change this (here and in manifest)
+	public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets";
 
 	public static final String HOME_TIMELINE_URL = "statuses/home_timeline.json";
+    public static final String USER_INFO_URL = "account/verify_credentials.json";
 
 	public static final int COUNT = 20;
     public static final int DEFAULT_COUNT = 0;
@@ -48,6 +49,13 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("format", "json");
 		client.get(apiUrl, params, handler);
 	}
+
+    public void getUserInfo(AsyncHttpResponseHandler httpResponseHandler) {
+        Log.i(this.getClass().toString(), "fetching current user info");
+        String apiURL = getApiUrl(USER_INFO_URL);
+        RequestParams params = new RequestParams();
+        getClient().get(apiURL, params, httpResponseHandler);
+    }
 
 	public void getHomeTimeline(int sinceId, AsyncHttpResponseHandler httpResponseHandler) {
         Log.i("TwitterClient since id", sinceId+"");
