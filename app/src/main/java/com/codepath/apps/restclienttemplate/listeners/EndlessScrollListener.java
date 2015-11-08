@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.listeners;
 
+import android.util.Log;
 import android.widget.AbsListView;
 
 /**
@@ -8,7 +9,7 @@ import android.widget.AbsListView;
 public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
     // The minimum amount of items to have below your current scroll position
     // before loading more.
-    private int visibleThreshold = 2;
+    private int visibleThreshold = 0;
     // The current offset index of data you have loaded
     private int currentPage = 0;
     // The total number of items in the dataset after the last load
@@ -37,6 +38,7 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
     {
+        Log.i("scroll listener", "scolled");
         // If the total item count is zero and the previous isn't, assume the
         // list is invalidated and should be reset back to initial state
         if (totalItemCount < previousTotalItemCount) {

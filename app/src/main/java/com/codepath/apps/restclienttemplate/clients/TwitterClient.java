@@ -33,7 +33,7 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String HOME_TIMELINE_URL = "statuses/home_timeline.json";
 
 	public static final int COUNT = 20;
-    public static final int DEFAULT_SINCE_ID = 1;
+    public static final int DEFAULT_COUNT = 0;
 
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);

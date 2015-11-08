@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.activities;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
@@ -23,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
     private TwitterClient twitterClient;
@@ -45,17 +46,18 @@ public class TimelineActivity extends AppCompatActivity {
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
+                Log.i("timeline", "loading more with totalcurrent" + totalItemsCount);
                 populateTimeline(totalItemsCount);
                 return true;
             }
         });
 
         twitterClient = TwitterApplication.getRestClient();
-        populateTimeline(TwitterClient.DEFAULT_SINCE_ID);
+        populateTimeline(TwitterClient.DEFAULT_COUNT);
     }
 
     private void populateTimeline(int totalItemsCount) {
-        twitterClient.getHomeTimeline(totalItemsCount, new JsonHttpResponseHandler() {
+        twitterClient.getHomeTimeline(totalItemsCount + 1, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 arrayAdapter.addAll(TimelineResponseParser.createTweets(response));
@@ -63,10 +65,20 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                // TODO - display error page
                 Log.e("error loading tweets", errorResponse.toString());
                 try {
-                    tvError.setText(errorResponse.getJSONArray("errors").getJSONObject(0).getString("message"));
+                    String errorMessage = errorResponse.getJSONArray("errors").getJSONObject(0).getString("message");
+                    // If some tweets are displayed already flash the error message, otherwise permanently displays error msg
+                    if (tweets.size() > 0) {
+                        Toast toast = Toast.makeText(TimelineActivity.this,
+                                errorMessage,
+                                Toast.LENGTH_LONG);
+                        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+                        v.setTextColor(Color.RED);
+                        toast.show();
+                    } else {
+                        tvError.setText(errorResponse.getJSONArray("errors").getJSONObject(0).getString("message"));
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.e("error loading tweets", "Cannot parse error message");
