@@ -18,6 +18,11 @@ import java.util.List;
  * Created by wewang on 11/7/15.
  */
 public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
+    private static class ViewHolder {
+        ImageView ivUserProfileImage;
+        TextView tvUserName;
+        TextView tvBody;
+    }
 
     public TweetsArrayAdapter(Context context, List<Tweet> tweets) {
         super(context, android.R.layout.simple_list_item_1, tweets);
@@ -26,20 +31,27 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Tweet tweet = getItem(position);
+        ViewHolder viewHolder;
+
         if (convertView == null) {
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tweet, parent, false);
+
+            viewHolder.ivUserProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
+            viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUsername);
+            viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        ImageView ivProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
-        TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUsername);
-        TextView tvBody = (TextView) convertView.findViewById(R.id.tvBody);
+        viewHolder.tvUserName.setText(tweet.getUser().getName());
+        viewHolder.tvBody.setText(tweet.getBody());
 
-        tvUserName.setText(tweet.getUser().getName());
-        tvBody.setText(tweet.getBody());
-
-        ivProfileImage.setImageResource(android.R.color.transparent);
-
-        Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(ivProfileImage);
+        viewHolder.ivUserProfileImage.setImageResource(android.R.color.transparent);
+        Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.ivUserProfileImage);
 
         return convertView;
     }
