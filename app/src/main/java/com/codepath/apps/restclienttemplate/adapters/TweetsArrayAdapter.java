@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.utils.RelativeTimestampParser;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         ImageView ivUserProfileImage;
         TextView tvUserName;
         TextView tvBody;
+        TextView tvRelativeTimeStamp;
     }
 
     public TweetsArrayAdapter(Context context, List<Tweet> tweets) {
@@ -42,6 +44,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder.ivUserProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
             viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUsername);
             viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
+            viewHolder.tvRelativeTimeStamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -53,6 +56,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         viewHolder.ivUserProfileImage.setImageResource(android.R.color.transparent);
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.ivUserProfileImage);
 
+        viewHolder.tvRelativeTimeStamp.setText(RelativeTimestampParser.getRelativeTimeAgo(tweet.getTimestamp()));
         return convertView;
     }
 }

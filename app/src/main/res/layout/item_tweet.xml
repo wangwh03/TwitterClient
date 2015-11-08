@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:padding="10dp">
+    android:padding="10dp" >
 
     <ImageView
         android:layout_width="50dp"
@@ -15,7 +15,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/username"
         android:id="@+id/tvUsername"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivProfileImage"
@@ -24,10 +24,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
+        android:text="@string/body"
         android:id="@+id/tvBody"
         android:layout_below="@+id/tvUsername"
         android:layout_toRightOf="@+id/ivProfileImage"
         android:layout_toEndOf="@+id/ivProfileImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/relative_time_stamp"
+        android:id="@+id/tvTimestamp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>
