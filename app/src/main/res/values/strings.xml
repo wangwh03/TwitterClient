@@ -16,5 +16,6 @@
     <string name="name">name</string>
     <string name="tweet">tweet</string>
     <string name="tweet_body_hint">What\'s happening?</string>
+    <string name="left_char_number">left char number</string>
 
 </resources>

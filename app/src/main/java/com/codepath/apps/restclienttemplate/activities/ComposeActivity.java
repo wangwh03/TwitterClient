@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +31,23 @@ public class ComposeActivity extends AppCompatActivity {
     private TextView tvUserName;
     private TextView tvName;
     private EditText etBody;
+    private TextView tvCharCount;
+
+    private static final int TOTAL_ALLOWED_CHAR = 140;
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            tvCharCount.setText(String.valueOf(TOTAL_ALLOWED_CHAR - s.length()));
+        }
+
+        public void afterTextChanged(Editable s) {
+        }
+    };
+
     private TwitterClient twitterClient;
-    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +58,9 @@ public class ComposeActivity extends AppCompatActivity {
         ivUserProfileImage = (ImageView) findViewById(R.id.ivComposeUserProfileImage);
         tvUserName = (TextView) findViewById(R.id.tvComposeUsername);
         tvName = (TextView) findViewById(R.id.tvComposeName);
+        tvCharCount = (TextView) findViewById(R.id.tvCharCount);
         etBody = (EditText) findViewById(R.id.etTweet);
+        etBody.addTextChangedListener(textWatcher);
         etBody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
