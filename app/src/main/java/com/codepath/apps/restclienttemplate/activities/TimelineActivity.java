@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ public class TimelineActivity extends AppCompatActivity {
     private ListView lvTweets;
     private TextView tvError;
 
+    private SwipeRefreshLayout swipeContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,23 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                arrayAdapter.clear();
+                populateTimeline(TwitterClient.DEFAULT_COUNT);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         twitterClient = TwitterApplication.getRestClient();
         populateTimeline(TwitterClient.DEFAULT_COUNT);
     }
@@ -64,6 +84,7 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 arrayAdapter.addAll(TimelineResponseParser.createTweets(response));
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
