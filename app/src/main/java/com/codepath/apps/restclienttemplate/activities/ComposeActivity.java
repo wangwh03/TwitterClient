@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,11 +36,18 @@ public class ComposeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ivUserProfileImage = (ImageView) findViewById(R.id.ivComposeUserProfileImage);
         tvUserName = (TextView) findViewById(R.id.tvComposeUsername);
         tvName = (TextView) findViewById(R.id.tvComposeName);
         etBody = (EditText) findViewById(R.id.etTweet);
+        etBody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etBody.setText("");
+            }
+        });
 
         twitterClient = TwitterApplication.getRestClient();
         twitterClient.getUserInfo(new JsonHttpResponseHandler() {

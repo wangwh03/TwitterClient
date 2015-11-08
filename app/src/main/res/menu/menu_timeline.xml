@@ -4,7 +4,8 @@
     tools:context="com.codepath.apps.restclienttemplate.activities.TimelineActivity">
 
     <item android:id="@+id/compose"
-        android:icon="@drawable/ic_twitter_icon"
+        android:icon="@drawable/ic_compose"
         android:title="@string/compose"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        />
 </menu>

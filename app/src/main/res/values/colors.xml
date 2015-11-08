@@ -2,4 +2,7 @@
 <resources>
     <item name="red" type="color">#ffff0000</item>
     <item name="grey" type="color">#77000000</item>
+    <item name="twitter_blue" type="color">#ff2589B8</item>
+    <item name="white" type="color">#ffffffff</item>
+    <item name="black" type="color">#ff000000</item>
 </resources>
