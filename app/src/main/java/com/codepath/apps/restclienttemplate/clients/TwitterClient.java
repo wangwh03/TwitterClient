@@ -5,6 +5,7 @@ import org.scribe.builder.api.FlickrApi;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -31,6 +32,9 @@ public class TwitterClient extends OAuthBaseClient {
 
 	public static final String HOME_TIMELINE_URL = "statuses/home_timeline.json";
 
+	public static final int COUNT = 20;
+    public static final int DEFAULT_SINCE_ID = 1;
+
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
@@ -45,22 +49,15 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
-	public void getHomeTimeline(AsyncHttpResponseHandler httpResponseHandler) {
-		String apiURL = getApiUrl(HOME_TIMELINE_URL);
+	public void getHomeTimeline(int sinceId, AsyncHttpResponseHandler httpResponseHandler) {
+        Log.i("TwitterClient since id", sinceId+"");
+        String apiURL = getApiUrl(HOME_TIMELINE_URL);
 
 		RequestParams params = new RequestParams();
-		params.put("count", 25);
-		params.put("since_id", 1);
+		params.put("count", COUNT);
+		params.put("since_id", sinceId);
 
 		getClient().get(apiURL, params, httpResponseHandler);
 	}
 
-	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-	 * 	  i.e getApiUrl("statuses/home_timeline.json");
-	 * 2. Define the parameters to pass to the request (query or body)
-	 *    i.e RequestParams params = new RequestParams("foo", "bar");
-	 * 3. Define the request method and make a call to the client
-	 *    i.e client.get(apiUrl, params, handler);
-	 *    i.e client.post(apiUrl, params, handler);
-	 */
 }

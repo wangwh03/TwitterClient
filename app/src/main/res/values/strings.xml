@@ -10,5 +10,6 @@
     <string name="username">username</string>
     <string name="relative_time_stamp">Relative Timestamp</string>
     <string name="body">body</string>
+    <string name="error">error message</string>
 
 </resources>

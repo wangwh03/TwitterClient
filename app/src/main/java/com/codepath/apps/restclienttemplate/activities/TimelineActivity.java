@@ -6,11 +6,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
 import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
+import com.codepath.apps.restclienttemplate.listeners.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.utils.TimelineResponseParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -28,23 +30,32 @@ public class TimelineActivity extends AppCompatActivity {
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter arrayAdapter;
     private ListView lvTweets;
+    private TextView tvError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        tvError = (TextView) findViewById(R.id.tvErrorMessage);
         lvTweets = (ListView) findViewById(R.id.lvTweets);
         tweets = new ArrayList<>();
         arrayAdapter = new TweetsArrayAdapter(this, tweets);
         lvTweets.setAdapter(arrayAdapter);
+        lvTweets.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                populateTimeline(totalItemsCount);
+                return true;
+            }
+        });
 
         twitterClient = TwitterApplication.getRestClient();
-        populateTimeline();
+        populateTimeline(TwitterClient.DEFAULT_SINCE_ID);
     }
 
-    private void populateTimeline() {
-        twitterClient.getHomeTimeline(new JsonHttpResponseHandler() {
+    private void populateTimeline(int totalItemsCount) {
+        twitterClient.getHomeTimeline(totalItemsCount, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 arrayAdapter.addAll(TimelineResponseParser.createTweets(response));
@@ -52,7 +63,14 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-
+                // TODO - display error page
+                Log.e("error loading tweets", errorResponse.toString());
+                try {
+                    tvError.setText(errorResponse.getJSONArray("errors").getJSONObject(0).getString("message"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e("error loading tweets", "Cannot parse error message");
+                }
             }
         });
     }
