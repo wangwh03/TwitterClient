@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
 import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
@@ -29,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TimelineActivity extends AppCompatActivity {
     private TwitterClient twitterClient;
@@ -66,6 +68,7 @@ public class TimelineActivity extends AppCompatActivity {
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 arrayAdapter.clear();
+                new Delete().from(Tweet.class).execute();
                 populateTimeline(TwitterClient.DEFAULT_COUNT);
             }
         });
@@ -79,11 +82,15 @@ public class TimelineActivity extends AppCompatActivity {
         populateTimeline(TwitterClient.DEFAULT_COUNT);
     }
 
-    private void populateTimeline(int totalItemsCount) {
+    private void populateTimeline(final int totalItemsCount) {
         twitterClient.getHomeTimeline(totalItemsCount + 1, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                arrayAdapter.addAll(TimelineResponseParser.createTweets(response));
+                List<Tweet> newTweets = TimelineResponseParser.createTweets(response);
+                arrayAdapter.addAll(newTweets);
+                for (Tweet tweet : newTweets) {
+                    tweet.save();
+                }
                 swipeContainer.setRefreshing(false);
             }
 

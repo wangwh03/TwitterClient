@@ -1,30 +1,41 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 /**
  * Created by wewang on 11/7/15.
  */
-public class User {
+@Table(name = "Users")
+public class User extends Model {
+    @Column(name = "remote_id", unique = true)
+    private long remoteId;
+    @Column(name = "name")
     private String name;
-    private long id;
+    @Column(name = "screenName")
     private String screenName;
+    @Column(name = "profileImageUrl")
     private String profileImageUrl;
 
     public User() {
+        super();
     }
 
-    public User(String name, long id, String screenName, String profileImageUrl) {
+    public User(String name, long remoteId, String screenName, String profileImageUrl) {
+        super();
         this.name = name;
-        this.id = id;
+        this.remoteId = remoteId;
         this.screenName = screenName;
         this.profileImageUrl = profileImageUrl;
     }
 
-    public String getName() {
-        return name;
+    public long getRemoteId() {
+        return remoteId;
     }
 
-    public long getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
     public String getScreenName() {
@@ -39,7 +50,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "name='" + name + '\'' +
-                ", id=" + id +
+                ", remoteId=" + remoteId +
                 ", screenName='" + screenName + '\'' +
                 ", profileImageUrl='" + profileImageUrl + '\'' +
                 '}';

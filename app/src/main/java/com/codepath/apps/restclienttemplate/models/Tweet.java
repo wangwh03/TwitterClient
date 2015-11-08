@@ -1,29 +1,37 @@
 package com.codepath.apps.restclienttemplate.models;
 
-import java.util.Date;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 /**
  * Created by wewang on 11/7/15.
  */
-public class Tweet {
-
-    private long id;
+@Table(name = "Tweets")
+public class Tweet extends Model {
+    @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    private long remoteId;
+    @Column(name = "body")
     private  String body;
+    @Column(name = "User", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
+    @Column(name = "timestamp")
     private String timestamp;
 
     public Tweet() {
+        super();
     }
 
-    public Tweet(long id, String body, User user, String timestamp) {
-        this.id = id;
+    public Tweet(long remoteId, String body, User user, String timestamp) {
+        super();
+        this.remoteId = remoteId;
         this.body = body;
         this.user = user;
         this.timestamp = timestamp;
     }
 
-    public long getId() {
-        return id;
+    public long getRemoteId() {
+        return remoteId;
     }
 
     public String getBody() {
@@ -41,7 +49,7 @@ public class Tweet {
     @Override
     public String toString() {
         return "Tweet{" +
-                "id=" + id +
+                "remoteId=" + remoteId +
                 ", body='" + body + '\'' +
                 ", user=" + user +
                 ", timestamp='" + timestamp + '\'' +
