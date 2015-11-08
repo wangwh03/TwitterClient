@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="red" type="color">#ffff0000</item>
+    <item name="grey" type="color">#77000000</item>
 </resources>

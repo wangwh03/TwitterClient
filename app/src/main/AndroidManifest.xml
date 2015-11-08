@@ -52,8 +52,7 @@
             android:label="@string/title_activity_timeline" >
         </activity>
         <activity
-            android:name=".activities.ComposeActivity"
-            android:label="@string/title_activity_compose" >
+            android:name=".activities.ComposeActivity" >
         </activity>
     </application>
 

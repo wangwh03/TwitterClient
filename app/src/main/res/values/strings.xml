@@ -14,5 +14,7 @@
     <string name="compose">compose</string>
     <string name="title_activity_compose">ComposeActivity</string>
     <string name="name">name</string>
+    <string name="tweet">tweet</string>
+    <string name="tweet_body_hint">What\'s happening?</string>
 
 </resources>

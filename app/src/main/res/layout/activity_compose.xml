@@ -20,9 +20,11 @@
         android:layout_height="wrap_content"
         android:text="@string/name"
         android:id="@+id/tvComposeName"
-        android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivComposeUserProfileImage"
-        android:layout_toEndOf="@+id/ivComposeUserProfileImage" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="bottom" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,20 +32,23 @@
         android:text="@string/username"
         android:id="@+id/tvComposeUsername"
         android:layout_toRightOf="@+id/ivComposeUserProfileImage"
-        android:layout_below="@+id/tvComposeName" />
+        android:layout_below="@+id/tvComposeName"
+        android:layout_alignBottom="@+id/ivComposeUserProfileImage"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="bottom" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
         android:id="@+id/etTweet"
         android:layout_below="@+id/ivComposeUserProfileImage"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp" />
-
+        android:textColor="@color/grey"
+        android:background="#00000000"
+        android:layout_marginTop="10dp"
+        android:text="@string/tweet_body_hint" />
 </RelativeLayout>

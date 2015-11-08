@@ -21,7 +21,7 @@ public final class RelativeTimestampParser {
             relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
                     System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
             relativeDate = relativeDate
-//                    .replace(" ago", "")
+                    .replace(" ago", "")
 //                    .replace("in ", "")
                     .replace(" seconds", "s")
                     .replace(" second", "s")

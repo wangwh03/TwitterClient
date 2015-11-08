@@ -32,6 +32,7 @@ public class TwitterClient extends OAuthBaseClient {
 
 	public static final String HOME_TIMELINE_URL = "statuses/home_timeline.json";
     public static final String USER_INFO_URL = "account/verify_credentials.json";
+    public static final String TWEET_URL = "statuses/update.json";
 
 	public static final int COUNT = 20;
     public static final int DEFAULT_COUNT = 0;
@@ -68,4 +69,10 @@ public class TwitterClient extends OAuthBaseClient {
 		getClient().get(apiURL, params, httpResponseHandler);
 	}
 
+    public void createTweet(String tweetBody, AsyncHttpResponseHandler httpResponseHandler) {
+        String apiURL = getApiUrl(TWEET_URL);
+        RequestParams params = new RequestParams();
+        params.put("status", tweetBody);
+        getClient().post(apiURL, params, httpResponseHandler);
+    }
 }
