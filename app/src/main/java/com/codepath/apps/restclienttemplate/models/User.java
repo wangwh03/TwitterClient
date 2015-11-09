@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Table(name = "Users")
 public class User extends Model {
-    @Column(name = "remote_id", unique = true)
+    @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long remoteId;
     @Column(name = "Name")
     private String name;

@@ -1,8 +1,15 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import android.util.Log;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by wewang on 11/7/15.
@@ -16,7 +23,7 @@ public class Tweet extends Model {
     @Column(name = "User", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
     @Column(name = "Timestamp")
-    private String timestamp;
+    private Date timestamp;
 
     public Tweet() {
         super();
@@ -27,7 +34,16 @@ public class Tweet extends Model {
         this.remoteId = remoteId;
         this.body = body;
         this.user = user;
-        this.timestamp = timestamp;
+
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+        try {
+            this.timestamp = sf.parse(timestamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(this.getClass().toString(), "cannot parse datetime");
+        }
     }
 
     public long getRemoteId() {
@@ -46,7 +62,7 @@ public class Tweet extends Model {
         this.user = user;
     }
 
-    public String getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 

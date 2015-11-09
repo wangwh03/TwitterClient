@@ -56,7 +56,6 @@ public class TimelineActivity extends AppCompatActivity {
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
-                Log.i("timeline", "loading more with total current" + totalItemsCount);
                 populateTimeline(totalItemsCount);
                 return true;
             }
@@ -66,13 +65,7 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                arrayAdapter.clear();
-//                new Delete().from(Tweet.class).execute();
-//                populateTimeline(TwitterClient.DEFAULT_COUNT);
-                onRefreshTest();
+                populateTimeline(TwitterClient.DEFAULT_COUNT, true);
             }
         });
         // Configure the refreshing colors
@@ -85,80 +78,67 @@ public class TimelineActivity extends AppCompatActivity {
         populateTimeline(TwitterClient.DEFAULT_COUNT);
     }
 
-    private void onRefreshTest() {
-        List<Tweet> cachedTweets = new Select().from(Tweet.class)
-//                                .orderBy("timestamp ASC")
-//                                .limit(TwitterClient.COUNT)
-//                                .offset(totalItemsCount)
-                .execute();
-        List<User> users = new Select().from(User.class).execute();
-
-        Log.i("loaded cached tweets", cachedTweets.toString());
-        Log.i("loaded cached users", users.toString());
-        arrayAdapter.addAll(cachedTweets);
-        swipeContainer.setRefreshing(false);
-    }
     private void populateTimeline(final int totalItemsCount) {
+        populateTimeline(totalItemsCount, false);
+    }
+
+    private void populateTimeline(final int totalItemsCount, final boolean isRefresh) {
         twitterClient.getHomeTimeline(totalItemsCount + 1, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                if (isRefresh) {
+                    arrayAdapter.clear();
+                    new Delete().from(Tweet.class).execute();
+                }
+
                 List<Tweet> newTweets = TimelineResponseParser.createTweets(response);
-                Log.i("tweets", newTweets.toString());
                 arrayAdapter.addAll(newTweets);
                 ActiveAndroid.beginTransaction();
                 try {
                     for (Tweet tweet : newTweets) {
-                        User existingUser =  new Select()
-                                .from(User.class)
-                                .where("remote_id = ?", tweet.getUser().getRemoteId())
-                                .executeSingle();
-                        if (existingUser == null) {
-                            tweet.getUser().save();
-                            Log.i("saved user 1", tweet.getUser().toString());
-                        } else {
-                            tweet.setUser(existingUser);
-                        }
                         tweet.save();
                     }
                     ActiveAndroid.setTransactionSuccessful();
                 } finally {
                     ActiveAndroid.endTransaction();
                 }
-                Log.i("saved tweets 1", newTweets.toString());
-
-                List<Tweet> cachedTweets = new Select().from(Tweet.class)
-//                                .orderBy("timestamp ASC")
-//                                .limit(TwitterClient.COUNT)
-//                                .offset(totalItemsCount)
-                        .execute();
-                Log.i("saved tweets 2", cachedTweets.toString());
-                List<User> users = new Select().from(User.class).execute();
-                Log.i("saved user", users.toString());
                 swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.e("error loading tweets", errorResponse.toString());
                 try {
-                    String errorMessage = errorResponse.getJSONArray("errors").getJSONObject(0).getString("message");
-                    // If some tweets are displayed already flash the error message, otherwise permanently displays error msg
-                    if (tweets.size() > 0) {
-                        Toast toast = Toast.makeText(TimelineActivity.this,
-                                errorMessage,
-                                Toast.LENGTH_LONG);
-                        TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                        v.setTextColor(Color.RED);
-                        toast.show();
-                    } else {
-                        tvError.setText(errorResponse.getJSONArray("errors").getJSONObject(0).getString("message"));
+                    String errorMessage = "Error loading tweets! ";
+                    if (errorResponse != null) {
+                        errorMessage = errorResponse.getJSONArray("errors").getJSONObject(0).getString("message");
                     }
+                    Log.e(this.getClass().toString(), errorMessage);
+
+                    toastError("Cannot retrieve Tweets at this time. Please try again later.");
+                    loadFromCache(totalItemsCount);
+                    swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.e("error loading tweets", "Cannot parse error message");
                 }
             }
         });
+    }
+
+    private void toastError(String errorMessage) {
+        Toast.makeText(TimelineActivity.this,
+                errorMessage,
+                Toast.LENGTH_LONG).show();
+    }
+
+    private void loadFromCache(int totalItemCount) {
+        List<Tweet> tweets = new Select().from(Tweet.class)
+                .limit(TwitterClient.COUNT)
+                .offset(totalItemCount + 1)
+                .orderBy("timestamp")
+                .execute();
+        Log.i("fetched from db", tweets.toString());
+        arrayAdapter.addAll(tweets);
     }
 
     @Override

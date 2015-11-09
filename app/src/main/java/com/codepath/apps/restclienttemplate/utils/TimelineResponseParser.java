@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate.utils;
 
+import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.User;
 
@@ -8,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ public final class TimelineResponseParser {
         try {
             return new Tweet(jsonObject.getLong("id"),
                     jsonObject.getString("text"),
-                    createUser(jsonObject.getJSONObject("user")),
+                    findOrCreateUser(jsonObject.getJSONObject("user")),
                     jsonObject.getString("created_at"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -39,13 +39,23 @@ public final class TimelineResponseParser {
         return new Tweet();
     }
 
-    public static User createUser(JSONObject jsonObject) {
+    public static User findOrCreateUser(JSONObject jsonObject) {
         try {
-            return new User(jsonObject.getString("name"),
-                    jsonObject.getLong("id"),
-                    jsonObject.getString("screen_name"),
-                    jsonObject.getString("profile_image_url")
-            );
+            long rId = jsonObject.getLong("id"); // get just the remote id
+            User existingUser =
+                    new Select().from(User.class).where("remote_id = ?", rId).executeSingle();
+            if (existingUser != null) {
+                // found and return existing
+                return existingUser;
+            } else {
+                // create and return new user
+                User user = new User(jsonObject.getString("name"),
+                        jsonObject.getLong("id"),
+                        jsonObject.getString("screen_name"),
+                        jsonObject.getString("profile_image_url"));
+                user.save();
+                return user;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
