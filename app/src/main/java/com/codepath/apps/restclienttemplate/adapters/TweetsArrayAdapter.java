@@ -21,6 +21,7 @@ import java.util.List;
 public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
     private static class ViewHolder {
         ImageView ivUserProfileImage;
+        TextView tvName;
         TextView tvUserName;
         TextView tvBody;
         TextView tvRelativeTimeStamp;
@@ -42,6 +43,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tweet, parent, false);
 
             viewHolder.ivUserProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
+            viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
             viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUsername);
             viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
             viewHolder.tvRelativeTimeStamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
@@ -50,7 +52,8 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.tvUserName.setText(tweet.getUser().getName());
+        viewHolder.tvName.setText(tweet.getUser().getName());
+        viewHolder.tvUserName.setText("@" + tweet.getUser().getScreenName());
         viewHolder.tvBody.setText(tweet.getBody());
 
         viewHolder.ivUserProfileImage.setImageResource(android.R.color.transparent);

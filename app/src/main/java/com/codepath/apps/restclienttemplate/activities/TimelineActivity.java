@@ -1,11 +1,9 @@
 package com.codepath.apps.restclienttemplate.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +20,6 @@ import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.listeners.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.Tweet;
-import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.apps.restclienttemplate.utils.TimelineResponseParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -39,7 +36,6 @@ public class TimelineActivity extends AppCompatActivity {
     private ArrayList<Tweet> tweets;
     private TweetsArrayAdapter arrayAdapter;
     private ListView lvTweets;
-    private TextView tvError;
 
     private SwipeRefreshLayout swipeContainer;
 
@@ -48,7 +44,6 @@ public class TimelineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
-        tvError = (TextView) findViewById(R.id.tvErrorMessage);
         lvTweets = (ListView) findViewById(R.id.lvTweets);
         tweets = new ArrayList<>();
         arrayAdapter = new TweetsArrayAdapter(this, tweets);
