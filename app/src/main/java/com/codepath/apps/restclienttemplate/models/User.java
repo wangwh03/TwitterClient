@@ -4,6 +4,8 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import java.util.List;
+
 /**
  * Created by wewang on 11/7/15.
  */
@@ -11,9 +13,9 @@ import com.activeandroid.annotation.Table;
 public class User extends Model {
     @Column(name = "remote_id", unique = true)
     private long remoteId;
-    @Column(name = "name")
+    @Column(name = "Name")
     private String name;
-    @Column(name = "screenName")
+    @Column(name = "screen_name")
     private String screenName;
     @Column(name = "profileImageUrl")
     private String profileImageUrl;
@@ -46,9 +48,14 @@ public class User extends Model {
         return profileImageUrl;
     }
 
+    public List<Tweet> getTweets() {
+        return getMany(Tweet.class, "Tweet");
+    }
+
     @Override
     public String toString() {
         return "User{" +
+                "id='" + getId() + '\'' +
                 "name='" + name + '\'' +
                 ", remoteId=" + remoteId +
                 ", screenName='" + screenName + '\'' +

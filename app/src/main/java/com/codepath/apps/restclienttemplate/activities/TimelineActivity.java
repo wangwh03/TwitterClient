@@ -13,7 +13,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
 import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
@@ -68,8 +70,9 @@ public class TimelineActivity extends AppCompatActivity {
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 arrayAdapter.clear();
-                new Delete().from(Tweet.class).execute();
-                populateTimeline(TwitterClient.DEFAULT_COUNT);
+//                new Delete().from(Tweet.class).execute();
+//                populateTimeline(TwitterClient.DEFAULT_COUNT);
+                onRefreshTest();
             }
         });
         // Configure the refreshing colors
@@ -82,15 +85,55 @@ public class TimelineActivity extends AppCompatActivity {
         populateTimeline(TwitterClient.DEFAULT_COUNT);
     }
 
+    private void onRefreshTest() {
+        List<Tweet> cachedTweets = new Select().from(Tweet.class)
+//                                .orderBy("timestamp ASC")
+//                                .limit(TwitterClient.COUNT)
+//                                .offset(totalItemsCount)
+                .execute();
+        List<User> users = new Select().from(User.class).execute();
+
+        Log.i("loaded cached tweets", cachedTweets.toString());
+        Log.i("loaded cached users", users.toString());
+        arrayAdapter.addAll(cachedTweets);
+        swipeContainer.setRefreshing(false);
+    }
     private void populateTimeline(final int totalItemsCount) {
         twitterClient.getHomeTimeline(totalItemsCount + 1, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 List<Tweet> newTweets = TimelineResponseParser.createTweets(response);
+                Log.i("tweets", newTweets.toString());
                 arrayAdapter.addAll(newTweets);
-                for (Tweet tweet : newTweets) {
-                    tweet.save();
+                ActiveAndroid.beginTransaction();
+                try {
+                    for (Tweet tweet : newTweets) {
+                        User existingUser =  new Select()
+                                .from(User.class)
+                                .where("remote_id = ?", tweet.getUser().getRemoteId())
+                                .executeSingle();
+                        if (existingUser == null) {
+                            tweet.getUser().save();
+                            Log.i("saved user 1", tweet.getUser().toString());
+                        } else {
+                            tweet.setUser(existingUser);
+                        }
+                        tweet.save();
+                    }
+                    ActiveAndroid.setTransactionSuccessful();
+                } finally {
+                    ActiveAndroid.endTransaction();
                 }
+                Log.i("saved tweets 1", newTweets.toString());
+
+                List<Tweet> cachedTweets = new Select().from(Tweet.class)
+//                                .orderBy("timestamp ASC")
+//                                .limit(TwitterClient.COUNT)
+//                                .offset(totalItemsCount)
+                        .execute();
+                Log.i("saved tweets 2", cachedTweets.toString());
+                List<User> users = new Select().from(User.class).execute();
+                Log.i("saved user", users.toString());
                 swipeContainer.setRefreshing(false);
             }
 

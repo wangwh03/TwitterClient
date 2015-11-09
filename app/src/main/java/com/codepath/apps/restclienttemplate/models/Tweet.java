@@ -11,11 +11,11 @@ import com.activeandroid.annotation.Table;
 public class Tweet extends Model {
     @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long remoteId;
-    @Column(name = "body")
+    @Column(name = "Body")
     private  String body;
     @Column(name = "User", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     private User user;
-    @Column(name = "timestamp")
+    @Column(name = "Timestamp")
     private String timestamp;
 
     public Tweet() {
@@ -42,6 +42,10 @@ public class Tweet extends Model {
         return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public String getTimestamp() {
         return timestamp;
     }
@@ -49,6 +53,7 @@ public class Tweet extends Model {
     @Override
     public String toString() {
         return "Tweet{" +
+                "id=" + getId() +
                 "remoteId=" + remoteId +
                 ", body='" + body + '\'' +
                 ", user=" + user +
