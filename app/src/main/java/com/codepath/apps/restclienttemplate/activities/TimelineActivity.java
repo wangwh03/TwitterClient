@@ -7,8 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
@@ -56,6 +57,15 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+        lvTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("clicked", "clicked tweet");
+                Tweet selectedItem = (Tweet) lvTweets.getItemAtPosition(position);
+                launchDetailedView(selectedItem);
+            }
+        });
+
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -71,6 +81,12 @@ public class TimelineActivity extends AppCompatActivity {
 
         twitterClient = TwitterApplication.getRestClient();
         populateTimeline(TwitterClient.DEFAULT_COUNT);
+    }
+
+    private void launchDetailedView(Tweet selectedItem) {
+        Intent intent = new Intent(TimelineActivity.this, DetailedViewActivity.class);
+        intent.putExtra("selectedTweet", selectedItem);
+        startActivity(intent);
     }
 
     private void populateTimeline(final int totalItemsCount) {

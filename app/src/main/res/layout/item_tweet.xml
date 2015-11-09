@@ -22,7 +22,6 @@
         android:layout_toRightOf="@+id/ivProfileImage"
         android:layout_toEndOf="@+id/ivProfileImage" />
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,13 +30,11 @@
         android:layout_toRightOf="@+id/tvName"
         />
 
-    <TextView
+    <com.codepath.apps.restclienttemplate.customizedUIComponents.LinkifiedTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/body"
         android:id="@+id/tvBody"
-        android:autoLink="all"
-        android:linksClickable="true"
         android:layout_below="@+id/tvName"
         android:layout_toRightOf="@+id/ivProfileImage"
         android:layout_toEndOf="@+id/ivProfileImage" />

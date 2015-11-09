@@ -1,0 +1,111 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.codepath.apps.restclienttemplate.activities.DetailedViewActivity" >
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivDetailedProfileImage"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        android:id="@+id/tvDetailedName"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivDetailedProfileImage"
+        android:layout_toEndOf="@+id/ivDetailedProfileImage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/username"
+        android:id="@+id/tvDetailedUsername"
+        android:layout_below="@+id/tvDetailedName"
+        android:layout_toRightOf="@+id/ivDetailedProfileImage"
+        android:layout_marginBottom="5dp"
+        />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.2dp"
+        android:id="@+id/separator1"
+        android:visibility="visible"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/ivDetailedProfileImage"/>
+
+    <com.codepath.apps.restclienttemplate.customizedUIComponents.LinkifiedTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/body"
+        android:id="@+id/tvDetailedBody"
+        android:autoLink="all"
+        android:linksClickable="true"
+        android:layout_below="@+id/ivDetailedProfileImage"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.2dp"
+        android:id="@+id/separator2"
+        android:visibility="visible"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/tvDetailedBody"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timestamp"
+        android:id="@+id/tvDetailedTimestamp"
+        android:layout_below="@+id/tvDetailedBody"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"/>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.2dp"
+        android:id="@+id/separator"
+        android:visibility="visible"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/tvDetailedTimestamp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/retweet_count"
+        android:id="@+id/tvDetailedRetweetCount"
+        android:layout_below="@+id/tvDetailedTimestamp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/retweets"
+        android:id="@+id/tvDetailedRetweets"
+        android:layout_alignTop="@+id/tvDetailedRetweetCount"
+        android:layout_toRightOf="@+id/tvDetailedRetweetCount"
+        android:layout_toEndOf="@+id/tvDetailedName"
+        android:textColor="@color/grey"
+        />
+
+</RelativeLayout>

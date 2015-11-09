@@ -1,5 +1,7 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.activeandroid.Model;
@@ -15,7 +17,7 @@ import java.util.Locale;
  * Created by wewang on 11/7/15.
  */
 @Table(name = "Tweets")
-public class Tweet extends Model {
+public class Tweet extends Model implements Parcelable {
     @Column(name = "remote_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long remoteId;
     @Column(name = "Body")
@@ -24,12 +26,14 @@ public class Tweet extends Model {
     private User user;
     @Column(name = "Timestamp")
     private Date timestamp;
+    @Column(name = "retweet_count")
+    private int retweetCount;
 
     public Tweet() {
         super();
     }
 
-    public Tweet(long remoteId, String body, User user, String timestamp) {
+    public Tweet(long remoteId, String body, User user, String timestamp, int retweetCount) {
         super();
         this.remoteId = remoteId;
         this.body = body;
@@ -44,6 +48,8 @@ public class Tweet extends Model {
             e.printStackTrace();
             Log.e(this.getClass().toString(), "cannot parse datetime");
         }
+
+        this.retweetCount = retweetCount;
     }
 
     public long getRemoteId() {
@@ -66,14 +72,51 @@ public class Tweet extends Model {
         return timestamp;
     }
 
+    public int getRetweetCount() {
+        return retweetCount;
+    }
+
     @Override
     public String toString() {
         return "Tweet{" +
-                "id=" + getId() +
                 "remoteId=" + remoteId +
                 ", body='" + body + '\'' +
                 ", user=" + user +
-                ", timestamp='" + timestamp + '\'' +
+                ", timestamp=" + timestamp +
+                ", retweetCount=" + retweetCount +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.remoteId);
+        dest.writeString(this.body);
+        dest.writeParcelable(this.user, 0);
+        dest.writeLong(timestamp != null ? timestamp.getTime() : -1);
+        dest.writeInt(this.retweetCount);
+    }
+
+    protected Tweet(Parcel in) {
+        this.remoteId = in.readLong();
+        this.body = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+        long tmpTimestamp = in.readLong();
+        this.timestamp = tmpTimestamp == -1 ? null : new Date(tmpTimestamp);
+        this.retweetCount = in.readInt();
+    }
+
+    public static final Creator<Tweet> CREATOR = new Creator<Tweet>() {
+        public Tweet createFromParcel(Parcel source) {
+            return new Tweet(source);
+        }
+
+        public Tweet[] newArray(int size) {
+            return new Tweet[size];
+        }
+    };
 }

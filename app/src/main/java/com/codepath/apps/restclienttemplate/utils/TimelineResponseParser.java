@@ -32,7 +32,8 @@ public final class TimelineResponseParser {
             return new Tweet(jsonObject.getLong("id"),
                     jsonObject.getString("text"),
                     findOrCreateUser(jsonObject.getJSONObject("user")),
-                    jsonObject.getString("created_at"));
+                    jsonObject.getString("created_at"),
+                    jsonObject.getInt("retweet_count"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

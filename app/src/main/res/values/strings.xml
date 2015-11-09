@@ -17,5 +17,10 @@
     <string name="tweet">tweet</string>
     <string name="tweet_body_hint">What\'s happening?</string>
     <string name="left_char_number">left char number</string>
+    <string name="title_activity_detailed_view">DetailedViewActivity</string>
+    <string name="timestamp">timestamp</string>
+    <string name="retweet_count">retweet count</string>
+    <string name="retweets">RETWEETS</string>
+    <string name="retweet">RETWEET</string>
 
 </resources>

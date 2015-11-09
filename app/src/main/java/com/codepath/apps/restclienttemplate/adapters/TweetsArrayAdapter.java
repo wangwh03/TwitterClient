@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.adapters;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.customizedUIComponents.LinkifiedTextView;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.utils.RelativeTimestampParser;
 import com.squareup.picasso.Picasso;
@@ -23,7 +25,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         ImageView ivUserProfileImage;
         TextView tvName;
         TextView tvUserName;
-        TextView tvBody;
+        LinkifiedTextView tvBody;
         TextView tvRelativeTimeStamp;
     }
 
@@ -45,7 +47,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder.ivUserProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
             viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
             viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUsername);
-            viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
+            viewHolder.tvBody = (LinkifiedTextView) convertView.findViewById(R.id.tvBody);
             viewHolder.tvRelativeTimeStamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
             convertView.setTag(viewHolder);
         } else {
@@ -54,7 +56,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
         viewHolder.tvName.setText(tweet.getUser().getName());
         viewHolder.tvUserName.setText("@" + tweet.getUser().getScreenName());
-        viewHolder.tvBody.setText(tweet.getBody());
+        viewHolder.tvBody.setText(Html.fromHtml(tweet.getBody()));
 
         viewHolder.ivUserProfileImage.setImageResource(android.R.color.transparent);
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.ivUserProfileImage);
