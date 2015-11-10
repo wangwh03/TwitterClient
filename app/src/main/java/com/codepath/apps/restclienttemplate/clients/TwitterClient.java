@@ -7,6 +7,7 @@ import org.scribe.builder.api.TwitterApi;
 import android.content.Context;
 import android.util.Log;
 
+import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -37,18 +38,13 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final int COUNT = 20;
     public static final int DEFAULT_COUNT = 0;
 
+	public static final int TIME_OUT = 2000;
+
+    private final OAuthAsyncHttpClient clientInstance = getClient();
+
 	public TwitterClient(Context context) {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
-	}
-
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
-	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
-		// Can specify query string params directly or through RequestParams.
-		RequestParams params = new RequestParams();
-		params.put("format", "json");
-		client.get(apiUrl, params, handler);
+        clientInstance.setTimeout(TIME_OUT);
 	}
 
     public void getUserInfo(AsyncHttpResponseHandler httpResponseHandler) {
@@ -66,13 +62,14 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("count", COUNT);
 		params.put("since_id", sinceId);
 
-		getClient().get(apiURL, params, httpResponseHandler);
+		clientInstance.setTimeout(4000);
+		clientInstance.get(apiURL, params, httpResponseHandler);
 	}
 
     public void createTweet(String tweetBody, AsyncHttpResponseHandler httpResponseHandler) {
         String apiURL = getApiUrl(TWEET_URL);
         RequestParams params = new RequestParams();
         params.put("status", tweetBody);
-        getClient().post(apiURL, params, httpResponseHandler);
+        clientInstance.post(apiURL, params, httpResponseHandler);
     }
 }
