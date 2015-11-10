@@ -25,7 +25,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         ImageView ivUserProfileImage;
         TextView tvName;
         TextView tvUserName;
-        LinkifiedTextView tvBody;
+        TextView tvBody;
         TextView tvRelativeTimeStamp;
     }
 
@@ -47,7 +47,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder.ivUserProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
             viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
             viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUsername);
-            viewHolder.tvBody = (LinkifiedTextView) convertView.findViewById(R.id.tvBody);
+            viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
             viewHolder.tvRelativeTimeStamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
             convertView.setTag(viewHolder);
         } else {
