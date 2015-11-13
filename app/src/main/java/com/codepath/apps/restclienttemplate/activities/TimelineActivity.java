@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.fragments.HomeTimelineFragment;
 import com.codepath.apps.restclienttemplate.fragments.MentionsTimelineFragment;
@@ -23,6 +24,9 @@ public class TimelineActivity extends AppCompatActivity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new TweetsPageAdapter(getSupportFragmentManager()));
 
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+
+        tabStrip.setViewPager(viewPager);
     }
 
     @Override
