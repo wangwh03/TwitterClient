@@ -23,5 +23,6 @@
     <string name="retweets">RETWEETS</string>
     <string name="home">Home</string>
     <string name="mentions">Mentions</string>
+    <string name="profile">Profile</string>
 
 </resources>

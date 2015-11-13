@@ -47,6 +47,8 @@ public class TimelineActivity extends AppCompatActivity {
         if (id == R.id.compose) {
             Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class);
             startActivity(intent);
+        } else if (id == R.id.miProfile) {
+
         }
 
         return super.onOptionsItemSelected(item);
