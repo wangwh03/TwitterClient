@@ -13,9 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.activeandroid.query.From;
+import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.activities.DetailedViewActivity;
-import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
 import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.listeners.EndlessScrollListener;
@@ -28,7 +29,7 @@ import java.util.List;
  * Created by wewang on 11/11/15.
  */
 public abstract class TweetsListFragment extends Fragment {
-    private ArrayList<Tweet> tweets;
+    protected ArrayList<Tweet> tweets;
     private TweetsArrayAdapter arrayAdapter;
     private ListView lvTweets;
 
@@ -44,7 +45,7 @@ public abstract class TweetsListFragment extends Fragment {
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public boolean onLoadMore(int page, int totalItemsCount) {
-                populateTimeline(totalItemsCount);
+                populateTimelineLoadMore();
                 return true;
             }
         });
@@ -62,7 +63,7 @@ public abstract class TweetsListFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                populateTimeline(TwitterClient.DEFAULT_COUNT, true);
+                populateTimelineOnRefresh();
             }
         });
         // Configure the refreshing colors
@@ -96,7 +97,32 @@ public abstract class TweetsListFragment extends Fragment {
         startActivity(intent);
     }
 
-    protected abstract void populateTimeline(final int totalItemsCount);
-    protected abstract void populateTimeline(final int totalItemsCount, final boolean isRefresh);
+    protected void populateTimelineLoadMore() {
+        populateTimeline(tweets.get(tweets.size() - 1).getRemoteId() - 1, false);
+    }
+
+    protected void populateTimelineOnRefresh() {
+        populateTimeline(null, true);
+    }
+
+    protected void populateTimelineOnCreate() {
+        populateTimeline(null, false);
+    }
+
+    protected abstract void populateTimeline(final Long maxId, final boolean isRefresh);
+
+    protected void loadFromCache(Long maxId) {
+        From select = new Select().from(Tweet.class)
+                .limit(TwitterClient.COUNT);
+
+        if (maxId != null) {
+            select = select.where("remote_id <= ?", maxId);
+        }
+
+        List<Tweet> tweets = select.orderBy("timestamp").execute();
+
+        Log.i("fetched from db", tweets.toString());
+        addAll(tweets);
+    }
 
 }

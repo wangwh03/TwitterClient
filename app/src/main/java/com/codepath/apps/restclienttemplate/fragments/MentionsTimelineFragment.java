@@ -31,15 +31,11 @@ public class MentionsTimelineFragment extends TweetsListFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         twitterClient = TwitterApplication.getRestClient();
-        populateTimeline(TwitterClient.DEFAULT_COUNT);
+        populateTimelineOnCreate();
     }
 
-    protected void populateTimeline(final int totalItemsCount) {
-        populateTimeline(totalItemsCount, false);
-    }
-
-    protected void populateTimeline(final int totalItemsCount, final boolean isRefresh) {
-        twitterClient.getMentionsline(new JsonHttpResponseHandler() {
+    protected void populateTimeline(final Long sinceId, final boolean isRefresh) {
+        twitterClient.getMentionsline(sinceId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 if (isRefresh) {
@@ -71,7 +67,7 @@ public class MentionsTimelineFragment extends TweetsListFragment {
                     Log.e(this.getClass().toString(), errorMessage);
 
                     toastError("Cannot retrieve Tweets at this time. Please try again later.");
-                    loadFromCache(totalItemsCount);
+                    loadFromCache(sinceId);
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -87,13 +83,4 @@ public class MentionsTimelineFragment extends TweetsListFragment {
                 Toast.LENGTH_LONG).show();
     }
 
-    private void loadFromCache(int totalItemCount) {
-        List<Tweet> tweets = new Select().from(Tweet.class)
-                .limit(TwitterClient.COUNT)
-                .offset(totalItemCount + 1)
-                .orderBy("timestamp")
-                .execute();
-        Log.i("fetched from db", tweets.toString());
-        addAll(tweets);
-    }
 }

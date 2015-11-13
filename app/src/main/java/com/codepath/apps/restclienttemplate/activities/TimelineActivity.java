@@ -1,22 +1,18 @@
 package com.codepath.apps.restclienttemplate.activities;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
 import com.codepath.apps.restclienttemplate.fragments.HomeTimelineFragment;
 import com.codepath.apps.restclienttemplate.fragments.MentionsTimelineFragment;
-import com.codepath.apps.restclienttemplate.fragments.TweetsListFragment;
-import com.codepath.apps.restclienttemplate.models.Tweet;
 
 public class TimelineActivity extends AppCompatActivity {
     @Override
@@ -26,6 +22,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new TweetsPageAdapter(getSupportFragmentManager()));
+
     }
 
     @Override
@@ -59,7 +56,7 @@ public class TimelineActivity extends AppCompatActivity {
         }
 
         @Override
-        public android.support.v4.app.Fragment getItem(int position) {
+        public Fragment getItem(int position) {
             if (position == 0) {
                 return new HomeTimelineFragment();
             } else if (position == 1) {

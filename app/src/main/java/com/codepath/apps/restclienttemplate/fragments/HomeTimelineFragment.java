@@ -7,9 +7,9 @@ import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
+import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
-import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.utils.TimelineResponseParser;
@@ -33,15 +33,12 @@ public class HomeTimelineFragment extends TweetsListFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         twitterClient = TwitterApplication.getRestClient();
-        populateTimeline(TwitterClient.DEFAULT_COUNT);
+        populateTimelineOnCreate();
     }
 
-    protected void populateTimeline(final int totalItemsCount) {
-        populateTimeline(totalItemsCount, false);
-    }
-
-    protected void populateTimeline(final int totalItemsCount, final boolean isRefresh) {
-        twitterClient.getHomeTimeline(totalItemsCount + 1, new JsonHttpResponseHandler() {
+    @Override
+    protected void populateTimeline(final Long maxId, final boolean isRefresh) {
+        twitterClient.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 if (isRefresh) {
@@ -73,7 +70,7 @@ public class HomeTimelineFragment extends TweetsListFragment {
                     Log.e(this.getClass().toString(), errorMessage);
 
                     toastError("Cannot retrieve Tweets at this time. Please try again later.");
-                    loadFromCache(totalItemsCount);
+                    loadFromCache(maxId);
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -87,16 +84,6 @@ public class HomeTimelineFragment extends TweetsListFragment {
         Toast.makeText(getContext(),
                 errorMessage,
                 Toast.LENGTH_LONG).show();
-    }
-
-    private void loadFromCache(int totalItemCount) {
-        List<Tweet> tweets = new Select().from(Tweet.class)
-                .limit(TwitterClient.COUNT)
-                .offset(totalItemCount + 1)
-                .orderBy("timestamp")
-                .execute();
-        Log.i("fetched from db", tweets.toString());
-        addAll(tweets);
     }
 
 }

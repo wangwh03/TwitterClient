@@ -1,7 +1,6 @@
 package com.codepath.apps.restclienttemplate.clients;
 
 import org.scribe.builder.api.Api;
-import org.scribe.builder.api.FlickrApi;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
@@ -10,7 +9,6 @@ import android.util.Log;
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /*
@@ -38,9 +36,9 @@ public class TwitterClient extends OAuthBaseClient {
     public static final String TWEET_URL = "statuses/update.json";
 
 	public static final int COUNT = 20;
-    public static final int DEFAULT_COUNT = 0;
+    public static final int DEFAULT_SINCE_ID = 1;
 
-	public static final int TIME_OUT = 2000;
+	public static final int TIME_OUT = 4000;
 
     private final OAuthAsyncHttpClient clientInstance = getClient();
 
@@ -56,16 +54,9 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().get(apiURL, params, httpResponseHandler);
     }
 
-	public void getHomeTimeline(int sinceId, AsyncHttpResponseHandler httpResponseHandler) {
-        Log.i("TwitterClient since id", sinceId+"");
+	public void getHomeTimeline(Long maxId, AsyncHttpResponseHandler httpResponseHandler) {
         String apiURL = getApiUrl(HOME_TIMELINE_URL);
-
-		RequestParams params = new RequestParams();
-		params.put("count", COUNT);
-		params.put("since_id", sinceId);
-
-		clientInstance.setTimeout(4000);
-		clientInstance.get(apiURL, params, httpResponseHandler);
+        makeRequest(apiURL, maxId, httpResponseHandler);
 	}
 
     public void createTweet(String tweetBody, AsyncHttpResponseHandler httpResponseHandler) {
@@ -75,13 +66,20 @@ public class TwitterClient extends OAuthBaseClient {
         clientInstance.post(apiURL, params, httpResponseHandler);
     }
 
-    public void getMentionsline(JsonHttpResponseHandler httpResponseHandler) {
+    public void getMentionsline(Long maxId, AsyncHttpResponseHandler httpResponseHandler) {
         String apiURL = getApiUrl(MENTIONS_TIMELINE_URL);
+        makeRequest(apiURL, maxId, httpResponseHandler);
+    }
 
+    private void makeRequest(String apiURL, Long maxId, AsyncHttpResponseHandler httpResponseHandler) {
+        Log.i(apiURL, String.valueOf(maxId));
         RequestParams params = new RequestParams();
         params.put("count", COUNT);
+        if (maxId != null) {
+            params.put("max_id", maxId);
+        }
 
-        clientInstance.setTimeout(4000);
+        clientInstance.setTimeout(TIME_OUT);
         clientInstance.get(apiURL, params, httpResponseHandler);
     }
 }
