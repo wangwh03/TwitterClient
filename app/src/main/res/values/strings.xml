@@ -21,6 +21,7 @@
     <string name="timestamp">timestamp</string>
     <string name="retweet_count">retweet count</string>
     <string name="retweets">RETWEETS</string>
-    <string name="retweet">RETWEET</string>
+    <string name="home">Home</string>
+    <string name="mentions">Mentions</string>
 
 </resources>

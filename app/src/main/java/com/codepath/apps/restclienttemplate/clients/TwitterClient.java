@@ -10,6 +10,7 @@ import android.util.Log;
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /*
@@ -32,6 +33,7 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets";
 
 	public static final String HOME_TIMELINE_URL = "statuses/home_timeline.json";
+	public static final String MENTIONS_TIMELINE_URL = "statuses/mentions_timeline.json";
     public static final String USER_INFO_URL = "account/verify_credentials.json";
     public static final String TWEET_URL = "statuses/update.json";
 
@@ -71,5 +73,15 @@ public class TwitterClient extends OAuthBaseClient {
         RequestParams params = new RequestParams();
         params.put("status", tweetBody);
         clientInstance.post(apiURL, params, httpResponseHandler);
+    }
+
+    public void getMentionsline(JsonHttpResponseHandler httpResponseHandler) {
+        String apiURL = getApiUrl(MENTIONS_TIMELINE_URL);
+
+        RequestParams params = new RequestParams();
+        params.put("count", COUNT);
+
+        clientInstance.setTimeout(4000);
+        clientInstance.get(apiURL, params, httpResponseHandler);
     }
 }
