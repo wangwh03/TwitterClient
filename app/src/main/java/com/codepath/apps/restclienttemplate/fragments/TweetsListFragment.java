@@ -17,6 +17,7 @@ import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.activities.DetailedViewActivity;
+import com.codepath.apps.restclienttemplate.activities.ProfileActivity;
 import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.listeners.EndlessScrollListener;
@@ -76,11 +77,19 @@ public abstract class TweetsListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         tweets = new ArrayList<>();
         arrayAdapter = new TweetsArrayAdapter(getActivity(), tweets);
+        arrayAdapter.setOnClickProfileListener(new TweetsArrayAdapter.OnClickProfileListener() {
+            @Override
+            public void onProfileImageClick(String screenName) {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra("screenName", screenName);
+                startActivity(intent);
+            }
+        });
     }
 
     public void addAll(List<Tweet> tweets) {

@@ -12,10 +12,14 @@ public final class AccountResponseParser {
 
     public static User createUser(JSONObject jsonObject) {
         try {
-            return new User(jsonObject.getString("name"),
+            return new User(
                     jsonObject.getLong("id"),
+                    jsonObject.getString("name"),
                     jsonObject.getString("screen_name"),
-                    jsonObject.getString("profile_image_url")
+                    jsonObject.getString("profile_image_url"),
+                    jsonObject.getString("description"),
+                    jsonObject.getInt("follower_count"),
+                    jsonObject.getInt("friends_count")
             );
         } catch (JSONException e) {
             e.printStackTrace();

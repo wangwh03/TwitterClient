@@ -22,17 +22,25 @@ public class User extends Model implements Parcelable {
     private String screenName;
     @Column(name = "profileImageUrl")
     private String profileImageUrl;
+    @Column(name = "tagline")
+    private String tagline;
+    @Column(name = "followersCount")
+    private int followersCount;
+    @Column(name = "followingsCount")
+    private int followingsCount;
 
     public User() {
         super();
     }
 
-    public User(String name, long remoteId, String screenName, String profileImageUrl) {
-        super();
-        this.name = name;
+    public User(long remoteId, String name, String screenName, String profileImageUrl, String tagline, int followersCount, int followingsCount) {
         this.remoteId = remoteId;
+        this.name = name;
         this.screenName = screenName;
         this.profileImageUrl = profileImageUrl;
+        this.tagline = tagline;
+        this.followersCount = followersCount;
+        this.followingsCount = followingsCount;
     }
 
     public long getRemoteId() {
@@ -55,17 +63,30 @@ public class User extends Model implements Parcelable {
         return getMany(Tweet.class, "Tweet");
     }
 
+    public String getTagline() {
+        return tagline;
+    }
+
+    public int getFollowersCount() {
+        return followersCount;
+    }
+
+    public int getFollowingsCount() {
+        return followingsCount;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id='" + getId() + '\'' +
-                "name='" + name + '\'' +
-                ", remoteId=" + remoteId +
+                "remoteId=" + remoteId +
+                ", name='" + name + '\'' +
                 ", screenName='" + screenName + '\'' +
                 ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", tagline='" + tagline + '\'' +
+                ", followersCount=" + followersCount +
+                ", followingsCount=" + followingsCount +
                 '}';
     }
-
 
     @Override
     public int describeContents() {
@@ -78,6 +99,9 @@ public class User extends Model implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.screenName);
         dest.writeString(this.profileImageUrl);
+        dest.writeString(this.tagline);
+        dest.writeInt(this.followersCount);
+        dest.writeInt(this.followingsCount);
     }
 
     protected User(Parcel in) {
@@ -85,9 +109,12 @@ public class User extends Model implements Parcelable {
         this.name = in.readString();
         this.screenName = in.readString();
         this.profileImageUrl = in.readString();
+        this.tagline = in.readString();
+        this.followersCount = in.readInt();
+        this.followingsCount = in.readInt();
     }
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+    public static final Creator<User> CREATOR = new Creator<User>() {
         public User createFromParcel(Parcel source) {
             return new User(source);
         }

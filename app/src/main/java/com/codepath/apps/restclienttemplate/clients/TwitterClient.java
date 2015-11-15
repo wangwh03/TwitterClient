@@ -31,13 +31,13 @@ public class TwitterClient extends OAuthBaseClient {
 	public static final String REST_CALLBACK_URL = "oauth://cpsimpletweets";
 
 	public static final String HOME_TIMELINE_URL = "statuses/home_timeline.json";
+	public static final String USER_TIMELINE_URL = "statuses/user_timeline.json";
 	public static final String MENTIONS_TIMELINE_URL = "statuses/mentions_timeline.json";
-    public static final String USER_INFO_URL = "account/verify_credentials.json";
+    public static final String ACCOUNT_INFO_URL = "account/verify_credentials.json";
+    public static final String USER_INFO_URL = "users/show.json";
     public static final String TWEET_URL = "statuses/update.json";
 
 	public static final int COUNT = 20;
-    public static final int DEFAULT_SINCE_ID = 1;
-
 	public static final int TIME_OUT = 4000;
 
     private final OAuthAsyncHttpClient clientInstance = getClient();
@@ -46,13 +46,6 @@ public class TwitterClient extends OAuthBaseClient {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
         clientInstance.setTimeout(TIME_OUT);
 	}
-
-    public void getUserInfo(AsyncHttpResponseHandler httpResponseHandler) {
-        Log.i(this.getClass().toString(), "fetching current user info");
-        String apiURL = getApiUrl(USER_INFO_URL);
-        RequestParams params = new RequestParams();
-        getClient().get(apiURL, params, httpResponseHandler);
-    }
 
 	public void getHomeTimeline(Long maxId, AsyncHttpResponseHandler httpResponseHandler) {
         String apiURL = getApiUrl(HOME_TIMELINE_URL);
@@ -79,6 +72,36 @@ public class TwitterClient extends OAuthBaseClient {
             params.put("max_id", maxId);
         }
 
+        clientInstance.setTimeout(TIME_OUT);
+        clientInstance.get(apiURL, params, httpResponseHandler);
+    }
+
+    public void getUserTimeline(String screenName, Long maxId, AsyncHttpResponseHandler httpResponseHandler) {
+        String apiURL = getApiUrl(USER_TIMELINE_URL);
+        RequestParams params = new RequestParams();
+        params.put("count", COUNT);
+
+        if (screenName != null) {
+            params.put("screen_name", screenName);
+        }
+        if (maxId != null) {
+            params.put("max_id", maxId);
+        }
+
+        clientInstance.setTimeout(TIME_OUT);
+        clientInstance.get(apiURL, params, httpResponseHandler);
+    }
+
+    public void getAccountInfo(AsyncHttpResponseHandler httpResponseHandler) {
+        String apiURL = getApiUrl(ACCOUNT_INFO_URL);
+        clientInstance.setTimeout(TIME_OUT);
+        clientInstance.get(apiURL, null, httpResponseHandler);
+    }
+
+    public void getUserInfo(String screenName, AsyncHttpResponseHandler httpResponseHandler) {
+        String apiURL = getApiUrl(USER_INFO_URL);
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screenName);
         clientInstance.setTimeout(TIME_OUT);
         clientInstance.get(apiURL, params, httpResponseHandler);
     }

@@ -21,6 +21,7 @@ public class TimelineActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        getSupportActionBar().setTitle(getString(R.string.title_activity_timeline));
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new TweetsPageAdapter(getSupportFragmentManager()));
 
@@ -48,7 +49,8 @@ public class TimelineActivity extends AppCompatActivity {
             Intent intent = new Intent(TimelineActivity.this, ComposeActivity.class);
             startActivity(intent);
         } else if (id == R.id.miProfile) {
-
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

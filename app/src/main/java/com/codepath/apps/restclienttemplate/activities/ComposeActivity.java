@@ -69,7 +69,7 @@ public class ComposeActivity extends AppCompatActivity {
         });
 
         twitterClient = TwitterApplication.getRestClient();
-        twitterClient.getUserInfo(new JsonHttpResponseHandler() {
+        twitterClient.getAccountInfo(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 User user = AccountResponseParser.createUser(response);

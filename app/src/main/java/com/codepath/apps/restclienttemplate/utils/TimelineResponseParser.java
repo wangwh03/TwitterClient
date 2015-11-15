@@ -50,10 +50,14 @@ public final class TimelineResponseParser {
                 return existingUser;
             } else {
                 // create and return new user
-                User user = new User(jsonObject.getString("name"),
-                        jsonObject.getLong("id"),
+                User user = new User(jsonObject.getLong("id"),
+                        jsonObject.getString("name"),
                         jsonObject.getString("screen_name"),
-                        jsonObject.getString("profile_image_url"));
+                        jsonObject.getString("profile_image_url"),
+                        jsonObject.getString("description"),
+                        jsonObject.getInt("followers_count"),
+                        jsonObject.getInt("friends_count")
+                        );
                 user.save();
                 return user;
             }

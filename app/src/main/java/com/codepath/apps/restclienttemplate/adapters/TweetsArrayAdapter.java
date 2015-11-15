@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.customizedUIComponents.LinkifiedTextView;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.utils.RelativeTimestampParser;
 import com.squareup.picasso.Picasso;
@@ -21,6 +20,12 @@ import java.util.List;
  * Created by wewang on 11/7/15.
  */
 public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
+    public interface OnClickProfileListener {
+        void onProfileImageClick(String screenName);
+    }
+
+    private OnClickProfileListener listener;
+
     private static class ViewHolder {
         ImageView ivUserProfileImage;
         TextView tvName;
@@ -35,13 +40,11 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Tweet tweet = getItem(position);
+        final Tweet tweet = getItem(position);
         ViewHolder viewHolder;
 
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tweet, parent, false);
 
             viewHolder.ivUserProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
@@ -56,12 +59,25 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
 
         viewHolder.tvName.setText(tweet.getUser().getName());
         viewHolder.tvUserName.setText("@" + tweet.getUser().getScreenName());
+//        viewHolder.ivUserProfileImage.setTag(tweet.getUser().getScreenName());
         viewHolder.tvBody.setText(Html.fromHtml(tweet.getBody()));
 
         viewHolder.ivUserProfileImage.setImageResource(android.R.color.transparent);
+        viewHolder.ivUserProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onProfileImageClick(tweet.getUser().getScreenName());
+            }
+        });
+
         Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.ivUserProfileImage);
 
         viewHolder.tvRelativeTimeStamp.setText(RelativeTimestampParser.getRelativeTimeAgo(tweet.getTimestamp()));
         return convertView;
     }
+
+    public void setOnClickProfileListener(OnClickProfileListener listener) {
+        this.listener = listener;
+    }
+
 }
