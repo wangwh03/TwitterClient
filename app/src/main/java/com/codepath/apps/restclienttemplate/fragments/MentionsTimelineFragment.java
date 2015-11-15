@@ -34,8 +34,14 @@ public class MentionsTimelineFragment extends TweetsListFragment {
         populateTimelineOnCreate();
     }
 
-    protected void populateTimeline(final Long sinceId, final boolean isRefresh) {
-        twitterClient.getMentionsline(sinceId, new JsonHttpResponseHandler() {
+    protected void populateTimeline(final Long maxId, final boolean isRefresh) {
+        if (!twitterClient.isNetworkAvailable()) {
+            handleError(maxId);
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
+        }
+        twitterClient.getMentionsline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 if (isRefresh) {
@@ -66,8 +72,7 @@ public class MentionsTimelineFragment extends TweetsListFragment {
                     }
                     Log.e(this.getClass().toString(), errorMessage);
 
-                    toastError("Cannot retrieve Tweets at this time. Please try again later.");
-                    loadFromCache(sinceId);
+                    handleError(maxId);
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -75,12 +80,6 @@ public class MentionsTimelineFragment extends TweetsListFragment {
                 }
             }
         });
-    }
-
-    private void toastError(String errorMessage) {
-        Toast.makeText(getActivity(),
-                errorMessage,
-                Toast.LENGTH_LONG).show();
     }
 
 }

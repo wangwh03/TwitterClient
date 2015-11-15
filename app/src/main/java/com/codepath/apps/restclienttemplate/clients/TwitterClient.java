@@ -3,7 +3,10 @@ package com.codepath.apps.restclienttemplate.clients;
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
+import android.accounts.NetworkErrorException;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.codepath.oauth.OAuthAsyncHttpClient;
@@ -99,10 +102,21 @@ public class TwitterClient extends OAuthBaseClient {
     }
 
     public void getUserInfo(String screenName, AsyncHttpResponseHandler httpResponseHandler) {
+        if (screenName == null || screenName.isEmpty()) {
+            getAccountInfo(httpResponseHandler);
+            return;
+        }
         String apiURL = getApiUrl(USER_INFO_URL);
         RequestParams params = new RequestParams();
         params.put("screen_name", screenName);
         clientInstance.setTimeout(TIME_OUT);
         clientInstance.get(apiURL, params, httpResponseHandler);
+    }
+
+    public Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }

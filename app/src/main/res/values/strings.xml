@@ -31,5 +31,6 @@
     <string name="following">{:count} Following</string>
 
     <string name="error_loading_user_info">Cannot load user information, please try again later.</string>
+    <string name="error_loading_tweets">Cannot load tweets, please try again later.</string>
 
 </resources>

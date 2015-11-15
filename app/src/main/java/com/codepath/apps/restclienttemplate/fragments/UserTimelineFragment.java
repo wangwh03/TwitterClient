@@ -42,6 +42,13 @@ public class UserTimelineFragment extends TweetsListFragment {
     }
 
     protected void populateTimeline(final Long maxId, final boolean isRefresh) {
+        if (!twitterClient.isNetworkAvailable()) {
+            handleError(maxId);
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
+        }
+
         String screenName = getArguments().getString("screenName");
         twitterClient.getUserTimeline(screenName, maxId, new JsonHttpResponseHandler() {
             @Override
@@ -74,8 +81,7 @@ public class UserTimelineFragment extends TweetsListFragment {
                     }
                     Log.e(this.getClass().toString(), errorMessage);
 
-                    toastError("Cannot retrieve Tweets at this time. Please try again later.");
-                    loadFromCache(maxId);
+                    handleError(maxId);
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -85,9 +91,4 @@ public class UserTimelineFragment extends TweetsListFragment {
         });
     }
 
-    private void toastError(String errorMessage) {
-        Toast.makeText(getActivity(),
-                errorMessage,
-                Toast.LENGTH_LONG).show();
-    }
 }

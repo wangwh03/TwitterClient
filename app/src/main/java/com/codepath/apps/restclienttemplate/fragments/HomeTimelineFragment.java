@@ -9,6 +9,7 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
+import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -38,6 +39,12 @@ public class HomeTimelineFragment extends TweetsListFragment {
 
     @Override
     protected void populateTimeline(final Long maxId, final boolean isRefresh) {
+        if (!twitterClient.isNetworkAvailable()) {
+            handleError(maxId);
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
+        }
         twitterClient.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -63,14 +70,13 @@ public class HomeTimelineFragment extends TweetsListFragment {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 try {
-                    String errorMessage = "Error loading tweets! ";
+                    String errorMessage = "";
                     if (errorResponse != null) {
                         errorMessage = errorResponse.getJSONArray("errors").getJSONObject(0).getString("message");
                     }
                     Log.e(this.getClass().toString(), errorMessage);
 
-                    toastError("Cannot retrieve Tweets at this time. Please try again later.");
-                    loadFromCache(maxId);
+                    handleError(maxId);
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -78,12 +84,6 @@ public class HomeTimelineFragment extends TweetsListFragment {
                 }
             }
         });
-    }
-
-    private void toastError(String errorMessage) {
-        Toast.makeText(getContext(),
-                errorMessage,
-                Toast.LENGTH_LONG).show();
     }
 
 }

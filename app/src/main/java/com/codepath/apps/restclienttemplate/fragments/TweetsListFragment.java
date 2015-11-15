@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
@@ -119,6 +120,13 @@ public abstract class TweetsListFragment extends Fragment {
     }
 
     protected abstract void populateTimeline(final Long maxId, final boolean isRefresh);
+
+    protected void handleError(Long maxId) {
+        Toast.makeText(getContext(),
+                getString(R.string.error_loading_tweets),
+                Toast.LENGTH_LONG).show();
+        loadFromCache(maxId);
+    }
 
     protected void loadFromCache(Long maxId) {
         From select = new Select().from(Tweet.class)
