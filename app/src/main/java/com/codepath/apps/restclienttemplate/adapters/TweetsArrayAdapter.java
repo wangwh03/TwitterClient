@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.utils.OwnerHelper;
 import com.codepath.apps.restclienttemplate.utils.RelativeTimestampParser;
 import com.squareup.picasso.Picasso;
 
@@ -32,6 +33,7 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
         TextView tvUserName;
         TextView tvBody;
         TextView tvRelativeTimeStamp;
+        TextView tvRetweetLabel;
     }
 
     public TweetsArrayAdapter(Context context, List<Tweet> tweets) {
@@ -52,27 +54,43 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tvUserName = (TextView) convertView.findViewById(R.id.tvUsername);
             viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
             viewHolder.tvRelativeTimeStamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
+            viewHolder.tvRetweetLabel = (TextView) convertView.findViewById(R.id.tvRetweetLabel);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.tvName.setText(tweet.getUser().getName());
-        viewHolder.tvUserName.setText("@" + tweet.getUser().getScreenName());
-//        viewHolder.ivUserProfileImage.setTag(tweet.getUser().getScreenName());
-        viewHolder.tvBody.setText(Html.fromHtml(tweet.getBody()));
+        final Tweet tweetToDisplay;
+        if (tweet.getRetweetedOriginal() == null) {
+            viewHolder.tvRetweetLabel.setText("");
+            viewHolder.tvRetweetLabel.setHeight(0);
+            tweetToDisplay = tweet;
+        } else {
+            String retweetedName;
+            if (tweet.getUser().getRemoteId() == OwnerHelper.fetchCurrentOwner().getRemoteId()) {
+                retweetedName = getContext().getString(R.string.retweet_label_you);
+            } else {
+                retweetedName = tweet.getUser().getName();
+            }
+            viewHolder.tvRetweetLabel.setText(getContext().getString(R.string.retweet_label).replace("{:name}",
+                    retweetedName));
+            tweetToDisplay = tweet.getRetweetedOriginal();
+        }
+        viewHolder.tvName.setText(tweetToDisplay.getUser().getName());
+        viewHolder.tvUserName.setText("@" + tweetToDisplay.getUser().getScreenName());
+        viewHolder.tvBody.setText(Html.fromHtml(tweetToDisplay.getBody()));
 
         viewHolder.ivUserProfileImage.setImageResource(android.R.color.transparent);
         viewHolder.ivUserProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onProfileImageClick(tweet.getUser().getScreenName());
+                listener.onProfileImageClick(tweetToDisplay.getUser().getScreenName());
             }
         });
 
-        Picasso.with(getContext()).load(tweet.getUser().getProfileImageUrl()).into(viewHolder.ivUserProfileImage);
+        Picasso.with(getContext()).load(tweetToDisplay.getUser().getProfileImageUrl()).into(viewHolder.ivUserProfileImage);
 
-        viewHolder.tvRelativeTimeStamp.setText(RelativeTimestampParser.getRelativeTimeAgo(tweet.getTimestamp()));
+        viewHolder.tvRelativeTimeStamp.setText(RelativeTimestampParser.getRelativeTimeAgo(tweetToDisplay.getTimestamp()));
         return convertView;
     }
 

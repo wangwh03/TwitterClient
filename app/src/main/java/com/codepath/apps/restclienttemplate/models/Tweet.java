@@ -30,12 +30,15 @@ public class Tweet extends Model implements Parcelable {
     private int retweetCount;
     @Column(name = "type")
     private TweetType type;
+    @Column(name = "retweet", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
+    private Tweet retweetedOriginal;
 
     public Tweet() {
         super();
     }
 
-    public Tweet(long remoteId, String body, User user, String timestamp, int retweetCount, TweetType tweetType) {
+    public Tweet(long remoteId, String body, User user, String timestamp, int retweetCount,
+                 TweetType tweetType, Tweet retweetedOriginal) {
         super();
         this.remoteId = remoteId;
         this.body = body;
@@ -53,6 +56,7 @@ public class Tweet extends Model implements Parcelable {
 
         this.retweetCount = retweetCount;
         this.type = tweetType;
+        this.retweetedOriginal = retweetedOriginal;
     }
 
     public long getRemoteId() {
@@ -83,16 +87,18 @@ public class Tweet extends Model implements Parcelable {
         return type;
     }
 
-    @Override
-    public String toString() {
-        return "Tweet{" +
-                "remoteId=" + remoteId +
-                ", body='" + body + '\'' +
-                ", user=" + user +
-                ", timestamp=" + timestamp +
-                ", retweetCount=" + retweetCount +
-                ", type=" + type +
-                '}';
+    public Tweet getRetweetedOriginal() {
+        return retweetedOriginal;
+    }
+
+    public Tweet(long remoteId, String body, User user, Date timestamp, int retweetCount, TweetType type, Tweet retweetedOriginal) {
+        this.remoteId = remoteId;
+        this.body = body;
+        this.user = user;
+        this.timestamp = timestamp;
+        this.retweetCount = retweetCount;
+        this.type = type;
+        this.retweetedOriginal = retweetedOriginal;
     }
 
     @Override
@@ -108,6 +114,7 @@ public class Tweet extends Model implements Parcelable {
         dest.writeLong(timestamp != null ? timestamp.getTime() : -1);
         dest.writeInt(this.retweetCount);
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
+        dest.writeParcelable(this.retweetedOriginal, 0);
     }
 
     protected Tweet(Parcel in) {
@@ -119,6 +126,7 @@ public class Tweet extends Model implements Parcelable {
         this.retweetCount = in.readInt();
         int tmpType = in.readInt();
         this.type = tmpType == -1 ? null : TweetType.values()[tmpType];
+        this.retweetedOriginal = in.readParcelable(Tweet.class.getClassLoader());
     }
 
     public static final Creator<Tweet> CREATOR = new Creator<Tweet>() {

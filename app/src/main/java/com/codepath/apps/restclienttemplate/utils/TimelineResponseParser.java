@@ -30,12 +30,23 @@ public final class TimelineResponseParser {
 
     public static Tweet createTweet(JSONObject jsonObject, TweetType type) {
         try {
+            Tweet retweetedOriginal = null;
+            if (!jsonObject.isNull("retweeted_status")) {
+                JSONObject retweetedStatus= jsonObject.getJSONObject("retweeted_status");
+                retweetedOriginal = new Tweet(retweetedStatus.getLong("id"),
+                        retweetedStatus.getString("text"),
+                        findOrCreateUser(retweetedStatus.getJSONObject("user")),
+                        retweetedStatus.getString("created_at"),
+                        retweetedStatus.getInt("retweet_count"),
+                        type, null);
+            }
+
             return new Tweet(jsonObject.getLong("id"),
                     jsonObject.getString("text"),
                     findOrCreateUser(jsonObject.getJSONObject("user")),
                     jsonObject.getString("created_at"),
                     jsonObject.getInt("retweet_count"),
-                    type);
+                    type, retweetedOriginal);
         } catch (JSONException e) {
             e.printStackTrace();
         }

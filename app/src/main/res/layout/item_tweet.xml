@@ -2,15 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:padding="10dp" >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/retweet_label"
+        android:id="@+id/tvRetweetLabel"
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/ivProfileImage"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:textColor="@color/grey" />
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/ivProfileImage"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/tvRetweetLabel"
+        android:layout_marginRight="5dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginRight="5dp" />
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,9 +30,12 @@
         android:text="@string/name"
         android:id="@+id/tvName"
         android:layout_marginRight="5dp"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/ivProfileImage"
         android:layout_toRightOf="@+id/ivProfileImage"
-        android:layout_toEndOf="@+id/ivProfileImage" />
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:gravity="top" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,16 +43,19 @@
         android:text="@string/username"
         android:id="@+id/tvUsername"
         android:layout_toRightOf="@+id/tvName"
-        />
+        android:layout_alignTop="@+id/ivProfileImage"
+        android:textColor="@color/grey"
+        android:gravity="top" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/body"
         android:id="@+id/tvBody"
-        android:layout_below="@+id/tvName"
+        android:layout_below="@+id/tvUsername"
         android:layout_toRightOf="@+id/ivProfileImage"
-        android:layout_toEndOf="@+id/ivProfileImage" />
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:textColor="@color/black" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,5 +63,7 @@
         android:text="@string/relative_time_stamp"
         android:id="@+id/tvTimestamp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignTop="@+id/tvUsername"
+        android:textColor="@color/grey"
+        android:gravity="top" />
 </RelativeLayout>
