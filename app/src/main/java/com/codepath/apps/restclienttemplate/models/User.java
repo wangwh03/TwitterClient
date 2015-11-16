@@ -20,20 +20,23 @@ public class User extends Model implements Parcelable {
     private String name;
     @Column(name = "screen_name")
     private String screenName;
-    @Column(name = "profileImageUrl")
+    @Column(name = "profile_image_url")
     private String profileImageUrl;
     @Column(name = "tagline")
     private String tagline;
-    @Column(name = "followersCount")
+    @Column(name = "followers_count")
     private int followersCount;
-    @Column(name = "followingsCount")
+    @Column(name = "followings_count")
     private int followingsCount;
+    @Column(name = "is_owner")
+    private boolean isOwner;
 
     public User() {
         super();
     }
 
-    public User(long remoteId, String name, String screenName, String profileImageUrl, String tagline, int followersCount, int followingsCount) {
+    public User(long remoteId, String name, String screenName, String profileImageUrl,
+                String tagline, int followersCount, int followingsCount, boolean isOwner) {
         this.remoteId = remoteId;
         this.name = name;
         this.screenName = screenName;
@@ -41,6 +44,7 @@ public class User extends Model implements Parcelable {
         this.tagline = tagline;
         this.followersCount = followersCount;
         this.followingsCount = followingsCount;
+        this.isOwner = isOwner;
     }
 
     public long getRemoteId() {
@@ -75,6 +79,14 @@ public class User extends Model implements Parcelable {
         return followingsCount;
     }
 
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setIsOwner(boolean isOwner) {
+        this.isOwner = isOwner;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -85,6 +97,7 @@ public class User extends Model implements Parcelable {
                 ", tagline='" + tagline + '\'' +
                 ", followersCount=" + followersCount +
                 ", followingsCount=" + followingsCount +
+                ", isOwner=" + isOwner +
                 '}';
     }
 
@@ -102,6 +115,7 @@ public class User extends Model implements Parcelable {
         dest.writeString(this.tagline);
         dest.writeInt(this.followersCount);
         dest.writeInt(this.followingsCount);
+        dest.writeByte(isOwner ? (byte) 1 : (byte) 0);
     }
 
     protected User(Parcel in) {
@@ -112,6 +126,7 @@ public class User extends Model implements Parcelable {
         this.tagline = in.readString();
         this.followersCount = in.readInt();
         this.followingsCount = in.readInt();
+        this.isOwner = in.readByte() != 0;
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

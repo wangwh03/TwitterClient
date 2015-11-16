@@ -56,7 +56,8 @@ public final class TimelineResponseParser {
                         jsonObject.getString("profile_image_url"),
                         jsonObject.getString("description"),
                         jsonObject.getInt("followers_count"),
-                        jsonObject.getInt("friends_count")
+                        jsonObject.getInt("friends_count"),
+                        false
                         );
                 user.save();
                 return user;

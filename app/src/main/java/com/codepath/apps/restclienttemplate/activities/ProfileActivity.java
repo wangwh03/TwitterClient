@@ -10,13 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.activeandroid.query.From;
 import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.fragments.UserTimelineFragment;
-import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.apps.restclienttemplate.utils.TimelineResponseParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -24,8 +22,6 @@ import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
-
-import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -43,6 +39,10 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 user = TimelineResponseParser.findOrCreateUser(response);
+                if (screenName == null || screenName.isEmpty()) {
+                    user.setIsOwner(true);
+                }
+                user.save();
                 getSupportActionBar().setTitle("@" + user.getScreenName());
                 populateProfileHeader(user);
             }
@@ -55,7 +55,9 @@ public class ProfileActivity extends AppCompatActivity {
                 }
                 Log.e(this.getClass().toString(), errorMessage);
                 Toast.makeText(ProfileActivity.this, getString(R.string.error_loading_user_info), Toast.LENGTH_LONG).show();
-                loadUserFromCache(screenName);
+                user = loadAccountFromCache();
+                getSupportActionBar().setTitle("@" + user.getScreenName());
+                populateProfileHeader(user);
             }
         });
 
@@ -86,8 +88,8 @@ public class ProfileActivity extends AppCompatActivity {
         Picasso.with(this).load(user.getProfileImageUrl()).into(ivProfileImage);
     }
 
-    private void loadUserFromCache(String screenName) {
-        user = new Select().from(User.class).where("screen_name = ?", screenName).executeSingle();
+    private User loadAccountFromCache() {
+        return new Select().from(User.class).where("is_owner = ?", true).executeSingle();
     }
 
     @Override

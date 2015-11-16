@@ -19,7 +19,8 @@ public final class AccountResponseParser {
                     jsonObject.getString("profile_image_url"),
                     jsonObject.getString("description"),
                     jsonObject.getInt("follower_count"),
-                    jsonObject.getInt("friends_count")
+                    jsonObject.getInt("friends_count"),
+                    true
             );
         } catch (JSONException e) {
             e.printStackTrace();
