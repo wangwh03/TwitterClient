@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate.utils;
 
 import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetType;
 import com.codepath.apps.restclienttemplate.models.User;
 
 import org.json.JSONArray;
@@ -15,11 +16,11 @@ import java.util.List;
  * Created by wewang on 11/7/15.
  */
 public final class TimelineResponseParser {
-    public static List<Tweet> createTweets(JSONArray jsonArray) {
+    public static List<Tweet> createTweets(JSONArray jsonArray, TweetType type) {
         List<Tweet> tweets = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
-                tweets.add(createTweet(jsonArray.getJSONObject(i)));
+                tweets.add(createTweet(jsonArray.getJSONObject(i), type));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -27,13 +28,14 @@ public final class TimelineResponseParser {
         return tweets;
     }
 
-    public static Tweet createTweet(JSONObject jsonObject) {
+    public static Tweet createTweet(JSONObject jsonObject, TweetType type) {
         try {
             return new Tweet(jsonObject.getLong("id"),
                     jsonObject.getString("text"),
                     findOrCreateUser(jsonObject.getJSONObject("user")),
                     jsonObject.getString("created_at"),
-                    jsonObject.getInt("retweet_count"));
+                    jsonObject.getInt("retweet_count"),
+                    type);
         } catch (JSONException e) {
             e.printStackTrace();
         }

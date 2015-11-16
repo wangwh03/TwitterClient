@@ -11,6 +11,7 @@ import com.activeandroid.query.Select;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetType;
 import com.codepath.apps.restclienttemplate.utils.TimelineResponseParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -36,7 +37,7 @@ public class MentionsTimelineFragment extends TweetsListFragment {
 
     protected void populateTimeline(final Long maxId, final boolean isRefresh) {
         if (!twitterClient.isNetworkAvailable()) {
-            handleError(maxId);
+            handleError(maxId, TweetType.MENTION_TIMELINE);
             if (swipeContainer != null) {
                 swipeContainer.setRefreshing(false);
             }
@@ -49,7 +50,7 @@ public class MentionsTimelineFragment extends TweetsListFragment {
                     new Delete().from(Tweet.class).execute();
                 }
 
-                List<Tweet> newTweets = TimelineResponseParser.createTweets(response);
+                List<Tweet> newTweets = TimelineResponseParser.createTweets(response, TweetType.MENTION_TIMELINE);
                 addAll(newTweets);
                 ActiveAndroid.beginTransaction();
                 try {
@@ -72,7 +73,7 @@ public class MentionsTimelineFragment extends TweetsListFragment {
                     }
                     Log.e(this.getClass().toString(), errorMessage);
 
-                    handleError(maxId);
+                    handleError(maxId, TweetType.MENTION_TIMELINE);
                     swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();

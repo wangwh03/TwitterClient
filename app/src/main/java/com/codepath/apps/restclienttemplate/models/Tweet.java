@@ -28,12 +28,14 @@ public class Tweet extends Model implements Parcelable {
     private Date timestamp;
     @Column(name = "retweet_count")
     private int retweetCount;
+    @Column(name = "type")
+    private TweetType type;
 
     public Tweet() {
         super();
     }
 
-    public Tweet(long remoteId, String body, User user, String timestamp, int retweetCount) {
+    public Tweet(long remoteId, String body, User user, String timestamp, int retweetCount, TweetType tweetType) {
         super();
         this.remoteId = remoteId;
         this.body = body;
@@ -50,6 +52,7 @@ public class Tweet extends Model implements Parcelable {
         }
 
         this.retweetCount = retweetCount;
+        this.type = tweetType;
     }
 
     public long getRemoteId() {
@@ -76,6 +79,10 @@ public class Tweet extends Model implements Parcelable {
         return retweetCount;
     }
 
+    public TweetType getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return "Tweet{" +
@@ -84,6 +91,7 @@ public class Tweet extends Model implements Parcelable {
                 ", user=" + user +
                 ", timestamp=" + timestamp +
                 ", retweetCount=" + retweetCount +
+                ", type=" + type +
                 '}';
     }
 
@@ -99,6 +107,7 @@ public class Tweet extends Model implements Parcelable {
         dest.writeParcelable(this.user, 0);
         dest.writeLong(timestamp != null ? timestamp.getTime() : -1);
         dest.writeInt(this.retweetCount);
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
     }
 
     protected Tweet(Parcel in) {
@@ -108,6 +117,8 @@ public class Tweet extends Model implements Parcelable {
         long tmpTimestamp = in.readLong();
         this.timestamp = tmpTimestamp == -1 ? null : new Date(tmpTimestamp);
         this.retweetCount = in.readInt();
+        int tmpType = in.readInt();
+        this.type = tmpType == -1 ? null : TweetType.values()[tmpType];
     }
 
     public static final Creator<Tweet> CREATOR = new Creator<Tweet>() {

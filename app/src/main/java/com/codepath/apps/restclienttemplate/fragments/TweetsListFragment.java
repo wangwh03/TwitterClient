@@ -23,6 +23,7 @@ import com.codepath.apps.restclienttemplate.adapters.TweetsArrayAdapter;
 import com.codepath.apps.restclienttemplate.clients.TwitterClient;
 import com.codepath.apps.restclienttemplate.listeners.EndlessScrollListener;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,22 +122,23 @@ public abstract class TweetsListFragment extends Fragment {
 
     protected abstract void populateTimeline(final Long maxId, final boolean isRefresh);
 
-    protected void handleError(Long maxId) {
+    protected void handleError(Long maxId, TweetType type) {
         Toast.makeText(getContext(),
                 getString(R.string.error_loading_tweets),
                 Toast.LENGTH_LONG).show();
-        loadFromCache(maxId);
+        loadFromCache(maxId, type);
     }
 
-    protected void loadFromCache(Long maxId) {
+    protected void loadFromCache(Long maxId, TweetType type) {
         From select = new Select().from(Tweet.class)
+                .where("type = ? ", type.toString())
                 .limit(TwitterClient.COUNT);
 
         if (maxId != null) {
             select = select.where("remote_id <= ?", maxId);
         }
 
-        List<Tweet> tweets = select.orderBy("timestamp").execute();
+        List<Tweet> tweets = select.orderBy("timestamp desc").execute();
 
         Log.i("fetched from db", tweets.toString());
         addAll(tweets);
