@@ -1,6 +1,9 @@
 package com.codepath.apps.restclienttemplate.adapters;
 
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.utils.OwnerHelper;
 import com.codepath.apps.restclienttemplate.utils.RelativeTimestampParser;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
@@ -87,9 +91,17 @@ public class TweetsArrayAdapter extends ArrayAdapter<Tweet> {
                 listener.onProfileImageClick(tweetToDisplay.getUser().getScreenName());
             }
         });
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(Color.GRAY)
+                .cornerRadiusDp(5)
+                .oval(false)
+                .build();
 
-        Picasso.with(getContext()).load(tweetToDisplay.getUser().getProfileImageUrl()).into(viewHolder.ivUserProfileImage);
-
+        Picasso.with(getContext())
+                .load(tweetToDisplay.getUser().getProfileImageUrl())
+                .fit()
+                .transform(transformation)
+                .into(viewHolder.ivUserProfileImage);
         viewHolder.tvRelativeTimeStamp.setText(RelativeTimestampParser.getRelativeTimeAgo(tweetToDisplay.getTimestamp()));
         return convertView;
     }

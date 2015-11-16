@@ -13,14 +13,15 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/ivProfileImage"
         android:layout_toEndOf="@+id/ivProfileImage"
-        android:textColor="@color/grey" />
+        android:textColor="@color/grey"
+        android:textSize="12sp" />
 
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/ivProfileImage"
         android:layout_below="@+id/tvRetweetLabel"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="8dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
