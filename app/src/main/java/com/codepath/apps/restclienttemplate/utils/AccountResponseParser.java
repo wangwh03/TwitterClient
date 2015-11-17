@@ -18,7 +18,7 @@ public final class AccountResponseParser {
                     jsonObject.getString("screen_name"),
                     jsonObject.getString("profile_image_url"),
                     jsonObject.getString("description"),
-                    jsonObject.getInt("follower_count"),
+                    jsonObject.getInt("followers_count"),
                     jsonObject.getInt("friends_count"),
                     true
             );
